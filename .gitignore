@@ -1,12 +1,12 @@
 *.apk
 *.ap_
-
 *.dex
-
 *.class
+
+.classpath
+.project
+local.properties
 
 bin/
 gen/
 assets/
-
-local.properties
