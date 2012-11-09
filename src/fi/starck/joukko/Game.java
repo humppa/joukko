@@ -29,9 +29,9 @@ public class Game {
         vertices.position(0);
     }
 
-    public void draw(GL10 gl) {
+    public void draw(GL10 gl, float r, float g, float b) {
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glColor4f(0.4f, 0.9f, 0.3f, 0.5f);
+        gl.glColor4f(r, g, b, 0.5f);
 
         /* OpenGL should use the buffer to extract the vertices from.
          * First three parameters are size, type and offset.
