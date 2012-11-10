@@ -13,7 +13,7 @@ public class Game {
         -1, -1, 0,
         -1,  1, 0,
          1, -1, 0,
-         1,  1, 0
+         1,  3, 0
     };
 
     public Game() {
