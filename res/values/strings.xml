@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">Joukko</string>
-    <string name="title_activity_joukko">JoukkoActivity</string>
+    <string name="title_activity">Joukko</string>
 </resources>
