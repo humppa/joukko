@@ -7,31 +7,27 @@ import java.nio.FloatBuffer;
 import javax.microedition.khronos.opengles.GL10;
 
 public class Game {
+    private int len;
     private FloatBuffer vertices;
 
-    private float floats[] = {
-        -1, -1, 0,
-        -1,  1, 0,
-         1, -1, 0,
-         1,  3, 0
-    };
+    public Game(float form[]) {
+        len = form.length;
 
-    public Game() {
         /* Float are 4 bytes wide.
          */
-        ByteBuffer buffer = ByteBuffer.allocateDirect(floats.length*4);
+        ByteBuffer buffer = ByteBuffer.allocateDirect(len*4);
         buffer.order(ByteOrder.nativeOrder());
 
         /* Allocate byte buffers memory.
          */
         vertices = buffer.asFloatBuffer();
-        vertices.put(floats);
+        vertices.put(form);
         vertices.position(0);
     }
 
-    public void draw(GL10 gl, float r, float g, float b) {
+    public void draw(GL10 gl, float rgb[]) {
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-        gl.glColor4f(r, g, b, 0.5f);
+        gl.glColor4f(rgb[0], rgb[1], rgb[2], 0.5f);
 
         /* OpenGL should use the buffer to extract the vertices from.
          * First three parameters are size, type and offset.
@@ -40,7 +36,7 @@ public class Game {
 
         /* Parameters are: draw mode, offset and count.
          */
-        gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, floats.length/3);
+        gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, len/3);
         gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
     }
 }
