@@ -4,38 +4,37 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.opengl.GLSurfaceView.Renderer;
+import android.util.Log;
 
 class GLRenderer implements Renderer {
-    private float rgb[];
-    private Game sqr, dyn;
-    private int width, height;
+    private final String TAG = "GLR";
 
-    private float sqr_co[] = {
-        -400,   0, 0,
-        -400,  42, 0,
-         400,   0, 0,
-         400,  42, 0
-    };
+    private Board board;
 
     public GLRenderer() {
-        rgb = new float[]{0.2f, 0.4f, 0.88f};
-        sqr = new Game(sqr_co);
+        board = new Board();
     }
 
     @Override
-    public void onSurfaceCreated(GL10 gl, EGLConfig config) {}
+    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
+        gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
+        gl.glEnable(GL10.GL_CULL_FACE);
+        gl.glCullFace(GL10.GL_BACK);
+    }
 
     @Override
-    public void onSurfaceChanged(GL10 gl, int w, int h) {
-        width = w;
-        height = h;
+    public void onSurfaceChanged(GL10 gl, int width, int height) {
+        Log.i(TAG, "[w,h] :: [" + width + "," + height + "]");
 
-        gl.glViewport(0, 0, w, h);
+        board.setResolution(width, height);
+
+        gl.glViewport(0, 0, width, height);
         gl.glMatrixMode(GL10.GL_PROJECTION);
         gl.glLoadIdentity();
 
         /* Params: left, right, bottom, top, near, far */
-        gl.glOrthof(-w/2, w/2, h/2, -h/2, 1, -1);
+        gl.glOrthof(-width/2, width/2, height/2, -height/2, -1.0f, 1.0f);
 
         gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glLoadIdentity();
@@ -45,27 +44,8 @@ class GLRenderer implements Renderer {
     public void onDrawFrame(GL10 gl) {
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
         gl.glLoadIdentity();
-        gl.glTranslatef(0.0f, 0.0f, 1.0f);
+        gl.glTranslatef(0.0f, 0.0f, -1.0f);
 
-        sqr.draw(gl, rgb);
-
-        if (dyn != null) {
-            dyn.draw(gl, new float[]{1.0f, 1.0f, 1.0f});
-        }
-    }
-
-    public void setColor(float r, float g, float b) {
-        rgb = new float[]{r, g, b};
-    }
-
-    public void moveTriangle(float x, float y) {
-        x = x*width-width/2;
-        y = y*height-height/2;
-
-        dyn = new Game(new float[] {
-            x,    y-24, 0,
-            x-24,    y, 0,
-            x+24,    y, 0
-        });
+        board.draw(gl);
     }
 }

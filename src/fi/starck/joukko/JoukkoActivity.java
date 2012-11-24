@@ -15,6 +15,7 @@ public class JoukkoActivity extends Activity {
         /* Save battery by rendering only when specifically requested.
          */
         surface.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+
         setContentView(surface);
     }
 

@@ -15,16 +15,7 @@ class GLSurface extends GLSurfaceView {
 
     @Override
     public boolean onTouchEvent(final MotionEvent e) {
-        queueEvent(new Runnable() {
-            @Override
-            public void run() {
-                renderer.setColor(1.0f, e.getX()/getWidth(), e.getY()/getHeight());
-                renderer.moveTriangle(e.getX()/getWidth(), e.getY()/getHeight());
-            }
-        });
-
         requestRender();
-
         return true;
     }
 }
