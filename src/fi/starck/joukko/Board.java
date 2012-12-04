@@ -88,7 +88,7 @@ public class Board {
     }
 
     public void draw(GL10 gl) {
-        Log.i(TAG, "Drawing " + drawCount + " primitives");
+        Log.i(TAG, "Drawing board with " + drawCount + " primitives");
 
         /* params for both: size, type, stride, ptr
          */
