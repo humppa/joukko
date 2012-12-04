@@ -13,14 +13,14 @@ class GLRenderer implements Renderer {
 
     private Chess game;
     private Board board;
-    private Piece[][] pieces;
+    private Piecemaker[][] pieces;
 
     public GLRenderer(Chess chess) {
         Log.i(TAG, "@Constructor: new Board and Pieces");
 
         game = chess;
         board = new Board();
-        pieces = new Piece[8][8];
+        pieces = new Piecemaker[8][8];
     }
 
     @Override
@@ -53,8 +53,13 @@ class GLRenderer implements Renderer {
 
         for (int y=0; y<8; y++) {
             for (int x=0; x<8; x++) {
-                if (state[y][x] == Type.p) {
-                    pieces[y][x] = new Piece(x, y, width, height);
+                Type t = state[y][x];
+
+                if (0 < t.getIndex() && t.getIndex() <= 6) {
+                    pieces[y][x] = new Piecemaker(t, x, y, width, height);
+                }
+                else {
+                    pieces[y][x] = null;
                 }
             }
         }
