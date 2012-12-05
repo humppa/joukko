@@ -24,7 +24,17 @@ class GLSurface extends GLSurfaceView {
 
     @Override
     public boolean onTouchEvent(final MotionEvent e) {
-        requestRender();
+        if (e.getAction() != MotionEvent.ACTION_DOWN) return true;
+
+        queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                renderer.resolveSquare(e.getX(), e.getY());
+            }
+        });
+
+        // requestRender();
+
         return true;
     }
 }

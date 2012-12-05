@@ -11,7 +11,7 @@ import android.util.Log;
 public class Board {
     private final String TAG = "BOARD";
 
-    private float tile;
+    private float unit;
     private int drawCount;
     private FloatBuffer colours, vertices;
 
@@ -30,10 +30,10 @@ public class Board {
         drawCount = 0;
     }
 
-    public void setResolution(int width, int height) {
-        int quad = width < height? width/2: height/2;
+    public void setResolution(float u) {
+        unit = u;
 
-        tile = (float)quad/4;
+        float quad = 4*u;
 
         colours.put(new float[]{
             0.9375f, 0.0345f, 0.2906f, 1.0f,
@@ -71,14 +71,14 @@ public class Board {
 
         float sqr[] = new float[]{
             0,    0,    0.1f,
-            0,    tile, 0.1f,
-            tile, 0,    0.1f,
-            tile, tile, 0.1f
+            0,    unit, 0.1f,
+            unit, 0,    0.1f,
+            unit, unit, 0.1f
         };
 
         for (int i=0; i<sqr.length; i++) {
-            sqr[i++] += tile*x;
-            sqr[i++] += tile*y;
+            sqr[i++] += unit*x;
+            sqr[i++] += unit*y;
         }
 
         colours.put(clr);

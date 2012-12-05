@@ -15,7 +15,7 @@ public class Piecemaker {
     private int count;
     private FloatBuffer colours, vertices;
 
-    public Piecemaker(Type type, int x, int y, int width, int height) {
+    public Piecemaker(Type type, int x, int y, int unit) {
         Log.i(TAG, "Piecing " + type.toString() + " at [" + x + "," + y + "]");
 
         Figure f = selectFigure(type);
@@ -28,7 +28,6 @@ public class Piecemaker {
         count = len/3;
 
         float[] coords = new float[len];
-        int unit = width < height? width/8: height/8;
 
         /* Copy the original figure,
          * scale it appropriately and
