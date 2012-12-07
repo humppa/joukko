@@ -18,7 +18,7 @@ public class Piecemaker {
         if (f == null) return;
 
         float[] vanilla = f.getCoords();
-
+        float color = type.getSide()? 1.0f: 0.42f;
         int len = vanilla.length;
         count = len/3;
 
@@ -32,13 +32,13 @@ public class Piecemaker {
             /* Copy   = from original * scale + shift
              */
             coords[i] = vanilla[i++]  * unit  + unit*(x-4);
-            coords[i] = vanilla[i++]  * unit  + unit*(-y+3);
+            coords[i] = vanilla[i++]  * unit  + unit*(y-4);
         }
 
         float[] rgb = new float[count*4];
 
         for (int i=0; i<rgb.length; i++) {
-            rgb[i] = 1.0f;
+            rgb[i] = color;
         }
 
         /* Initializing and allocating memory for our vertex
