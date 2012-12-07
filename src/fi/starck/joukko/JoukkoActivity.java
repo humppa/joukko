@@ -16,7 +16,7 @@ public class JoukkoActivity extends Activity {
 
         Log.i(TAG, "Creation of activity!");
 
-        view = new GLSurface(this);
+        view = new GLView(this);
 
         /* Save battery by rendering only when specifically requested.
          */
@@ -26,14 +26,21 @@ public class JoukkoActivity extends Activity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        view.onResume();
+    public void onBackPressed() {
+        ((GLView) view).goBack();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         view.onPause();
+        Log.i(TAG, "Activity did pausing!");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        view.onResume();
+        Log.i(TAG, "Activity did resuming!");
     }
 }

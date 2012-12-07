@@ -5,23 +5,21 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.opengl.GLSurfaceView.Renderer;
 import android.util.Log;
-import fi.starck.sakki.board.Chess;
 import fi.starck.sakki.board.Type;
 
 class GLRenderer implements Renderer {
     private final String TAG = "GLR";
 
     private int width, height, unit;
-
-    private Chess game;
-    private Board board;
+    private Type[][] state;
+    private Backdrop backdrop;
     private Piecemaker[][] pieces;
 
-    public GLRenderer(Chess chess) {
+    public GLRenderer(Type[][] game) {
         Log.i(TAG, "@Constructor: new Board and Pieces");
 
-        game = chess;
-        board = new Board();
+        state = game;
+        backdrop = new Backdrop();
         pieces = new Piecemaker[8][8];
     }
 
@@ -53,10 +51,32 @@ class GLRenderer implements Renderer {
         gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glLoadIdentity();
 
-        board.setResolution(unit);
+        backdrop.setResolution(unit);
+    }
 
-        Type state[][] = game.getState();
+    @Override
+    public void onDrawFrame(GL10 gl) {
+        gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+        gl.glLoadIdentity();
+        gl.glTranslatef(0.0f, 0.0f, -1.0f);
 
+        recreateDrawables();
+
+        backdrop.draw(gl);
+
+        for (int x=0; x<8; x++) {
+            for (int y=0; y<8; y++) {
+                if (pieces[x][y] != null) {
+                    pieces[x][y].draw(gl);
+                }
+            }
+        }
+    }
+
+    /**
+     * Iterate through game state and create pieces to be drawn.
+     */
+    private void recreateDrawables() {
         for (int y=0; y<8; y++) {
             for (int x=0; x<8; x++) {
                 Type t = state[y][x];
@@ -71,23 +91,13 @@ class GLRenderer implements Renderer {
         }
     }
 
-    @Override
-    public void onDrawFrame(GL10 gl) {
-        gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-        gl.glLoadIdentity();
-        gl.glTranslatef(0.0f, 0.0f, -1.0f);
-
-        board.draw(gl);
-
-        Log.i(TAG, "Board done. Drawing some pieces.");
-
-        for (int x=0; x<8; x++) {
-            for (int y=0; y<8; y++) {
-                if (pieces[x][y] != null) {
-                    pieces[x][y].draw(gl);
-                }
-            }
-        }
+    /**
+     * Update game state information.
+     *
+     * @param typearray Game state.
+     */
+    void setState(Type[][] typearray) {
+        state = typearray;
     }
 
     /**

@@ -6,18 +6,13 @@ import java.nio.FloatBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import android.util.Log;
 import fi.starck.sakki.board.Type;
 
 public class Piecemaker {
-    private final String TAG = "PIECE";
-
     private int count;
     private FloatBuffer colours, vertices;
 
     public Piecemaker(Type type, int x, int y, int unit) {
-        Log.i(TAG, "Piecing " + type.toString() + " at [" + x + "," + y + "]");
-
         Figure f = selectFigure(type);
 
         if (f == null) return;

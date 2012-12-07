@@ -6,16 +6,12 @@ import java.nio.FloatBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import android.util.Log;
-
-public class Board {
-    private final String TAG = "BOARD";
-
+public class Backdrop {
     private float unit;
     private int drawCount;
     private FloatBuffer colours, vertices;
 
-    public Board() {
+    public Backdrop() {
         /* Initializing and allocating memory for our vertex
          * and colour buffers. Floats are 4 bytes long.
          */
@@ -88,7 +84,7 @@ public class Board {
     }
 
     public void draw(GL10 gl) {
-        Log.i(TAG, "Drawing board with " + drawCount + " primitives");
+        // Log.i(TAG, "Drawing board with " + drawCount + " primitives");
 
         /* params for both: size, type, stride, ptr
          */
