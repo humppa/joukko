@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import fi.starck.sakki.board.Chess;
 import fi.starck.sakki.board.MoveException;
+import fi.starck.sakki.board.Type;
 
 class GLView extends GLSurfaceView {
     private final String TAG = "GLS";
@@ -35,18 +36,58 @@ class GLView extends GLSurfaceView {
         setRenderer(renderer);
     }
 
-    private void saveState(String fen) {
-        SharedPreferences.Editor editor = safe.edit();
-        editor.putString(KEY, fen);
-        editor.commit();
-    }
-
-    public void goBack() {
+    public void undo() {
         if (!history.isEmpty()) {
             game = new Chess(history.remove(0));
-            renderer.setState(game.getState());
-            requestRender();
+            update();
         }
+    }
+
+    /**
+     * Initiate a move.
+     *
+     * Check that user is selecting his/hers own piece (and not empty square
+     * or opponents piece). Also prefix move with pieces name if needed.
+     *
+     * @param sqr Coordinate of the selected square.
+     *
+     * @return Beginning of the move, if move seems valid. Otherwise null.
+     */
+    protected String beginMove(String sqr) {
+        Type type = game.typeAt(sqr);
+
+        if (type == null) return null;
+
+        if (type.getSide() == game.getTurn()) {
+            // TODO: mark selected square
+            return type.isPawn()? sqr: type.toString().toUpperCase() + sqr;
+        }
+
+        return null;
+    }
+
+    /**
+     * Finish move.
+     *
+     * Make same kind of checks as beginMove() i.e. if the square
+     * is empty or has opponents piece, and act accordingly.
+     *
+     * @param move Beginning of the move.
+     * @param sqr Coordinate of the selected square.
+     *
+     * @return Complete move, if it seems valid, or null.
+     */
+    protected String finishMove(String move, String sqr) {
+        Type type = game.typeAt(sqr);
+
+        if (type == null) {
+            return move + sqr;
+        }
+        else if (type.getSide() != game.getTurn()) {
+            return move + "x" + sqr;
+        }
+
+        return null;
     }
 
     @Override
@@ -56,45 +97,52 @@ class GLView extends GLSurfaceView {
         queueEvent(new Runnable() {
             @Override
             public void run() {
-                String current;
+                String tmp;
                 String sqr = renderer.resolveSquare(e.getX(), e.getY());
 
                 if (move == null) {
-                    move = sqr;
-                    // FIXME: Tässä ois hyvä visuaalisesti merkata siirron alku
+                    move = beginMove(sqr);
                 }
                 else {
-                    current = game.toString();
+                    move = finishMove(move, sqr);
+
+                    if (move == null) return;
+
+                    tmp = game.toString();
 
                     try {
-                        Log.i(TAG, "@" + game.toString());
-                        Log.i(TAG, "Moving <" + move + sqr + ">");
+                        Log.i(TAG, "<" + move + ">");
 
-                        game.move(move + sqr);
-                        history.add(0, current);
+                        game.move(move);
+                        history.add(0, tmp);
                     }
                     catch (MoveException me) {
                         Log.e(TAG, "Move error: " + me.toString());
 
                         if (me.isDirty()) {
-                            game = new Chess(current);
+                            game = new Chess(tmp);
                         }
-
-                        Log.i(TAG, "Game is now: " + game.toString());
                     }
 
-                    renderer.setState(game.getState());
-                    requestRender();
-
-                    Log.i(TAG, "Rendered: " + game.toString());
-
-                    saveState(game.toString());
-
                     move = null;
+
+                    update();
                 }
             }
         });
 
         return true;
+    }
+
+    private void saveState(String fen) {
+        SharedPreferences.Editor editor = safe.edit();
+        editor.putString(KEY, fen);
+        editor.commit();
+    }
+
+    void update() {
+        saveState(game.toString());
+        renderer.setState(game.getState());
+        requestRender();
     }
 }

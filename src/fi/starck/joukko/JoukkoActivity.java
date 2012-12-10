@@ -27,7 +27,7 @@ public class JoukkoActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        ((GLView) view).goBack();
+        ((GLView) view).undo();
     }
 
     @Override
