@@ -2,16 +2,10 @@ package fi.starck.joukko;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-
-import javax.microedition.khronos.opengles.GL10;
 
 import fi.starck.sakki.board.Type;
 
-public class Piecemaker {
-    private int count;
-    private FloatBuffer colours, vertices;
-
+class Piecemaker extends Drawable {
     public Piecemaker(Type type, int x, int y, int unit) {
         Figure f = selectFigure(type);
 
@@ -81,16 +75,5 @@ public class Piecemaker {
         }
 
         return null;
-    }
-
-    public void draw(GL10 gl) {
-        /* params for both: size, type, stride, ptr
-         */
-        gl.glColorPointer(4, GL10.GL_FLOAT, 0, colours);
-        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertices);
-
-        /* params: mode, first, count
-         */
-        gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, count);
     }
 }

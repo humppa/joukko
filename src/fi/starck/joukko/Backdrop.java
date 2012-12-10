@@ -2,14 +2,9 @@ package fi.starck.joukko;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
 
-import javax.microedition.khronos.opengles.GL10;
-
-public class Backdrop {
+class Backdrop extends Drawable {
     private float unit;
-    private int drawCount;
-    private FloatBuffer colours, vertices;
 
     public Backdrop() {
         /* Initializing and allocating memory for our vertex
@@ -23,7 +18,7 @@ public class Backdrop {
 
         colours  = b1.asFloatBuffer();
         vertices = b2.asFloatBuffer();
-        drawCount = 0;
+        count = 0;
     }
 
     public void setResolution(float u) {
@@ -44,7 +39,7 @@ public class Backdrop {
              quad,  quad, 0
         });
 
-        drawCount += 4;
+        count += 4;
 
         for (int x=-4; x<4; x++) {
             for (int y=-4; y<4; y++) {
@@ -80,19 +75,6 @@ public class Backdrop {
         colours.put(clr);
         vertices.put(sqr);
 
-        drawCount += 4;
-    }
-
-    public void draw(GL10 gl) {
-        // Log.i(TAG, "Drawing board with " + drawCount + " primitives");
-
-        /* params for both: size, type, stride, ptr
-         */
-        gl.glColorPointer(4, GL10.GL_FLOAT, 0, colours);
-        gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertices);
-
-        /* params: mode, first, count
-         */
-        gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, drawCount);
+        count += 4;
     }
 }
