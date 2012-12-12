@@ -11,14 +11,17 @@ class GLRenderer implements Renderer {
     private final String TAG = "GLR";
 
     private int width, height, unit;
+    private int file, rank;
     private Type[][] state;
+    private Mark selected;
     private Backdrop backdrop;
     private Piecemaker[][] pieces;
 
-    public GLRenderer(Type[][] game) {
+    public GLRenderer(Type[][] status) {
         Log.i(TAG, "@Constructor: new Board and Pieces");
 
-        state = game;
+        state = status;
+        selected = null;
         backdrop = new Backdrop();
         pieces = new Piecemaker[8][8];
     }
@@ -64,6 +67,10 @@ class GLRenderer implements Renderer {
 
         backdrop.draw(gl);
 
+        if (selected != null) {
+            selected.draw(gl);
+        }
+
         for (int x=0; x<8; x++) {
             for (int y=0; y<8; y++) {
                 if (pieces[x][y] != null) {
@@ -92,9 +99,18 @@ class GLRenderer implements Renderer {
     }
 
     /**
+     * FIXME
+     * @param ok
+     */
+    void toggleSelected(boolean ok) {
+        selected = ok? new Mark(file, rank, unit): null;
+    }
+
+    /**
      * Update game state information.
      *
      * @param typearray Game state.
+     * @param checked
      */
     void setState(Type[][] typearray) {
         state = typearray;
@@ -106,7 +122,6 @@ class GLRenderer implements Renderer {
      * @return SAN square name as a string.
      */
     String resolveSquare(float x, float y) {
-        int file, rank;
         String[] lookup = {"a", "b", "c", "d", "e", "f", "g", "h"};
 
         if (width < height) {

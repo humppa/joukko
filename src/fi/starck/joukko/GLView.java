@@ -22,7 +22,7 @@ class GLView extends GLSurfaceView {
     private SharedPreferences safe;
     private ArrayList<String> history;
 
-    public GLView(Context context) {
+    GLView(Context context) {
         super(context);
 
         Log.i(TAG, "@Constructor: new Chess and Renderer");
@@ -34,13 +34,6 @@ class GLView extends GLSurfaceView {
         history = new ArrayList<String>();
 
         setRenderer(renderer);
-    }
-
-    public void undo() {
-        if (!history.isEmpty()) {
-            game = new Chess(history.remove(0));
-            update();
-        }
     }
 
     /**
@@ -59,7 +52,8 @@ class GLView extends GLSurfaceView {
         if (type == null) return null;
 
         if (type.getSide() == game.getTurn()) {
-            // TODO: mark selected square
+            renderer.toggleSelected(true);
+            requestRender();
             return type.isPawn()? sqr: type.toString().toUpperCase() + sqr;
         }
 
@@ -97,7 +91,7 @@ class GLView extends GLSurfaceView {
         queueEvent(new Runnable() {
             @Override
             public void run() {
-                String tmp;
+                String tmp = "";
                 String sqr = renderer.resolveSquare(e.getX(), e.getY());
 
                 if (move == null) {
@@ -108,9 +102,9 @@ class GLView extends GLSurfaceView {
 
                     if (move == null) return;
 
-                    tmp = game.toString();
-
                     try {
+                        tmp = game.toString();
+                        renderer.toggleSelected(false);
                         Log.i(TAG, "<" + move + ">");
 
                         game.move(move);
@@ -138,6 +132,13 @@ class GLView extends GLSurfaceView {
         SharedPreferences.Editor editor = safe.edit();
         editor.putString(KEY, fen);
         editor.commit();
+    }
+
+    void undo() {
+        if (!history.isEmpty()) {
+            game = new Chess(history.remove(0));
+            update();
+        }
     }
 
     void update() {
