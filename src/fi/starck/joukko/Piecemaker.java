@@ -5,8 +5,13 @@ import java.nio.ByteOrder;
 
 import fi.starck.sakki.board.Type;
 
+/**
+ * Create a game piece to given coordinate.
+ *
+ * @author Tuomas Starck
+ */
 class Piecemaker extends Drawable {
-    public Piecemaker(Type type, int x, int y, int unit) {
+    Piecemaker(Type type, int x, int y, int unit) {
         Figure f = selectFigure(type);
 
         if (f == null) return;
@@ -18,12 +23,8 @@ class Piecemaker extends Drawable {
 
         float[] coords = new float[len];
 
-        /* Copy the original figure,
-         * scale it appropriately and
-         * shift it to place.
-         */
         for (int i=0; i<len; i++) {
-            /* Copy   = from original * scale + shift
+            /* Copy   = from original * scale + shift to place
              */
             coords[i] = vanilla[i++]  * unit  + unit*(x-4);
             coords[i] = vanilla[i++]  * unit  + unit*(y-4);
@@ -35,9 +36,6 @@ class Piecemaker extends Drawable {
             rgb[i] = color;
         }
 
-        /* Initializing and allocating memory for our vertex
-         * and colour buffers. Floats are 4 bytes long.
-         */
         ByteBuffer b1 = ByteBuffer.allocateDirect(rgb.length*4);
         ByteBuffer b2 = ByteBuffer.allocateDirect(coords.length*4);
 

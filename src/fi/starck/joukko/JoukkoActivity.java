@@ -5,6 +5,11 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
 
+/**
+ * Chess game board in OpenGL ES.
+ *
+ * @author Tuomas Starck
+ */
 public class JoukkoActivity extends Activity {
     private final String TAG = "ACT";
 
@@ -13,8 +18,6 @@ public class JoukkoActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Log.i(TAG, "Creation of activity!");
 
         view = new GLView(this);
 

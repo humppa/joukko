@@ -3,6 +3,11 @@ package fi.starck.joukko;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+/**
+ * Create a visible selection mark.
+ *
+ * @author Tuomas Starck
+ */
 class Mark extends Drawable {
     private float[] mark = new float[] {
            0,    0, 0.3f,

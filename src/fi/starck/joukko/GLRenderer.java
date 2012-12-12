@@ -7,6 +7,13 @@ import android.opengl.GLSurfaceView.Renderer;
 import android.util.Log;
 import fi.starck.sakki.board.Type;
 
+/**
+ * OpenGL rendering interface.
+ *
+ * This class sets up OpenGL subsystem and creates drawable objects.
+ *
+ * @author Tuomas Starck
+ */
 class GLRenderer implements Renderer {
     private final String TAG = "GLR";
 
@@ -63,7 +70,7 @@ class GLRenderer implements Renderer {
         gl.glLoadIdentity();
         gl.glTranslatef(0.0f, 0.0f, -1.0f);
 
-        recreateDrawables();
+        recreatePieces();
 
         backdrop.draw(gl);
 
@@ -83,7 +90,7 @@ class GLRenderer implements Renderer {
     /**
      * Iterate through game state and create pieces to be drawn.
      */
-    private void recreateDrawables() {
+    private void recreatePieces() {
         for (int y=0; y<8; y++) {
             for (int x=0; x<8; x++) {
                 Type t = state[y][x];
@@ -99,8 +106,9 @@ class GLRenderer implements Renderer {
     }
 
     /**
-     * FIXME
-     * @param ok
+     * Create or remove selection mark.
+     *
+     * @param ok Indication if mark should be created or removed.
      */
     void toggleSelected(boolean ok) {
         selected = ok? new Mark(file, rank, unit): null;
@@ -119,7 +127,13 @@ class GLRenderer implements Renderer {
     /**
      * Resolve input coordinate to game board square.
      *
-     * @return SAN square name as a string.
+     * This method takes screen coordinates (x and y) and translates
+     * them to SAN coordinate. As a side effect, coordinate of the
+     * last input event is saved (in variables file and rank).
+     *
+     * If input is not within board, null is returned.
+     *
+     * @return SAN square name as a string or null.
      */
     String resolveSquare(float x, float y) {
         String[] lookup = {"a", "b", "c", "d", "e", "f", "g", "h"};
@@ -134,8 +148,6 @@ class GLRenderer implements Renderer {
         }
 
         if (0 > file || file >= 8) return null;
-
-        Log.i(TAG, "[ " + lookup[file] + rank + " ] @" + x + "," + y);
 
         return lookup[file] + rank;
     }

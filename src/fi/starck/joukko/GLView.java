@@ -12,6 +12,14 @@ import fi.starck.sakki.board.Chess;
 import fi.starck.sakki.board.MoveException;
 import fi.starck.sakki.board.Type;
 
+/**
+ * Main board view.
+ *
+ * This class is mostly responsible for input handling, UI logic and
+ * interaction with Sakki (the game logic).
+ *
+ * @author Tuomas Starck
+ */
 class GLView extends GLSurfaceView {
     private final String TAG = "GLS";
     private final String KEY = "fen";
@@ -24,8 +32,6 @@ class GLView extends GLSurfaceView {
 
     GLView(Context context) {
         super(context);
-
-        Log.i(TAG, "@Constructor: new Chess and Renderer");
 
         move = null;
         safe = PreferenceManager.getDefaultSharedPreferences(context);
