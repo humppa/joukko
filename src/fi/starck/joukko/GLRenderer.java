@@ -19,14 +19,16 @@ class GLRenderer implements Renderer {
 
     private int width, height, unit;
     private int file, rank;
+    private boolean turn;
     private Type[][] state;
     private Mark selected;
     private Backdrop backdrop;
     private Piecemaker[][] pieces;
 
-    public GLRenderer(Type[][] status) {
+    public GLRenderer(Type[][] status, boolean bool) {
         Log.i(TAG, "@Constructor: new Board and Pieces");
 
+        turn = bool;
         state = status;
         selected = null;
         backdrop = new Backdrop();
@@ -96,7 +98,7 @@ class GLRenderer implements Renderer {
                 Type t = state[y][x];
 
                 if (0 < t.getIndex() && t.getIndex() <= 6) {
-                    pieces[y][x] = new Piecemaker(t, x, y, unit);
+                    pieces[y][x] = new Piecemaker(t, turn, x, y, unit);
                 }
                 else {
                     pieces[y][x] = null;
@@ -118,10 +120,11 @@ class GLRenderer implements Renderer {
      * Update game state information.
      *
      * @param typearray Game state.
-     * @param checked
+     * @param bool Side of the next move.
      */
-    void setState(Type[][] typearray) {
+    void setState(Type[][] typearray, boolean bool) {
         state = typearray;
+        turn = bool;
     }
 
     /**

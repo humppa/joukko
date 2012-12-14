@@ -36,7 +36,7 @@ class GLView extends GLSurfaceView {
         move = null;
         safe = PreferenceManager.getDefaultSharedPreferences(context);
         game = new Chess(safe.getString(KEY, null));
-        renderer = new GLRenderer(game.getState());
+        renderer = new GLRenderer(game.getState(), game.getTurn());
         history = new ArrayList<String>();
 
         setRenderer(renderer);
@@ -109,15 +109,13 @@ class GLView extends GLSurfaceView {
                     if (move == null) return;
 
                     try {
-                        tmp = game.toString();
                         renderer.toggleSelected(false);
-                        Log.i(TAG, "<" + move + ">");
-
+                        tmp = game.toString();
                         game.move(move);
                         history.add(0, tmp);
                     }
                     catch (MoveException me) {
-                        Log.e(TAG, "Move error: " + me.toString());
+                        Log.i(TAG, "Move error <" + move + ">: " + me.toString());
 
                         if (me.isDirty()) {
                             game = new Chess(tmp);
@@ -134,22 +132,36 @@ class GLView extends GLSurfaceView {
         return true;
     }
 
-    private void saveState(String fen) {
-        SharedPreferences.Editor editor = safe.edit();
-        editor.putString(KEY, fen);
-        editor.commit();
-    }
-
+    /**
+     * Undo.
+     *
+     * If a move has been initiated, cancel it. Otherwise,
+     * go back in time, if there is history.
+     */
     void undo() {
-        if (!history.isEmpty()) {
+        if (move != null) {
+            move = null;
+            renderer.toggleSelected(false);
+            update();
+        }
+        else if (!history.isEmpty()) {
             game = new Chess(history.remove(0));
             update();
         }
     }
 
+    /**
+     * Save game state and rerender screen.
+     *
+     * This should be called whenever the state of the
+     * game has changed.
+     */
     void update() {
-        saveState(game.toString());
-        renderer.setState(game.getState());
+        SharedPreferences.Editor editor = safe.edit();
+        editor.putString(KEY, game.toString());
+        editor.commit();
+
+        renderer.setState(game.getState(), game.getTurn());
         requestRender();
     }
 }

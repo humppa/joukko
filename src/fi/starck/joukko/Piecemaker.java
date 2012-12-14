@@ -11,7 +11,7 @@ import fi.starck.sakki.board.Type;
  * @author Tuomas Starck
  */
 class Piecemaker extends Drawable {
-    Piecemaker(Type type, int x, int y, int unit) {
+    Piecemaker(Type type, boolean turn, int x, int y, int unit) {
         Figure f = selectFigure(type);
 
         if (f == null) return;
@@ -23,11 +23,26 @@ class Piecemaker extends Drawable {
 
         float[] coords = new float[len];
 
+        /* If it is black's turn, flip everything around.
+         */
+        if (turn) {
+            for (int i=0; i<len; i++) {
+                coords[i] = vanilla[i++];
+                coords[i] = vanilla[i++];
+            }
+        }
+        else {
+            for (int i=0; i<len; i++) {
+                coords[i] = 1.0f-vanilla[i++];
+                coords[i] = 1.0f-vanilla[i++];
+            }
+        }
+
+        /* Scale and shift to place.
+         */
         for (int i=0; i<len; i++) {
-            /* Copy   = from original * scale + shift to place
-             */
-            coords[i] = vanilla[i++]  * unit  + unit*(x-4);
-            coords[i] = vanilla[i++]  * unit  + unit*(y-4);
+            coords[i] = coords[i++] * unit  + unit*(x-4);
+            coords[i] = coords[i++] * unit  + unit*(y-4);
         }
 
         float[] rgb = new float[count*4];
