@@ -24,7 +24,7 @@ class GLView extends GLSurfaceView {
     private final String TAG = "GLS";
     private final String KEY = "fen";
 
-    private String move;
+    private Move move;
     private Chess game;
     private GLRenderer renderer;
     private SharedPreferences safe;
@@ -45,49 +45,53 @@ class GLView extends GLSurfaceView {
     /**
      * Initiate a move.
      *
-     * Check that user is selecting his/hers own piece (and not empty square
-     * or opponents piece). Also prefix move with pieces name if needed.
+     * Check that user is selecting his/hers own piece and create the
+     * start of the move.
      *
      * @param sqr Coordinate of the selected square.
-     *
-     * @return Beginning of the move, if move seems valid. Otherwise null.
      */
-    protected String beginMove(String sqr) {
+    protected void beginMove(String sqr) {
         Type type = game.typeAt(sqr);
 
-        if (type == null) return null;
+        /* Ignore if user tapped air.
+         */
+        if (type == null) return;
 
         if (type.getSide() == game.getTurn()) {
+            move = new Move(type, sqr);
             renderer.toggleSelected(true);
             requestRender();
-            return type.isPawn()? sqr: type.toString().toUpperCase() + sqr;
         }
-
-        return null;
     }
 
     /**
-     * Finish move.
+     * Finish or withdraw a move.
      *
-     * Make same kind of checks as beginMove() i.e. if the square
-     * is empty or has opponents piece, and act accordingly.
+     * Check that the target square is empty or has opponents piece,
+     * and act accordingly. If previously selected square is tapped
+     * again, move is cancelled.
      *
-     * @param move Beginning of the move.
      * @param sqr Coordinate of the selected square.
      *
-     * @return Complete move, if it seems valid, or null.
+     * @return True if move seems valid.
      */
-    protected String finishMove(String move, String sqr) {
+    protected boolean finishMove(String sqr) {
+        if (sqr.equals(move.getSource())) undo();
+
         Type type = game.typeAt(sqr);
 
         if (type == null) {
-            return move + sqr;
+            move.setTarget(sqr);
         }
         else if (type.getSide() != game.getTurn()) {
-            return move + "x" + sqr;
+            move.setCapture();
+            move.setTarget(sqr);
+        }
+        else {
+            return false;
         }
 
-        return null;
+        return true;
     }
 
     @Override
@@ -97,34 +101,31 @@ class GLView extends GLSurfaceView {
         queueEvent(new Runnable() {
             @Override
             public void run() {
-                String tmp = "";
+                String last = game.toString();
                 String sqr = renderer.resolveSquare(e.getX(), e.getY());
 
                 if (move == null) {
-                    move = beginMove(sqr);
+                    beginMove(sqr);
                 }
                 else {
-                    move = finishMove(move, sqr);
-
-                    if (move == null) return;
+                    if (!finishMove(sqr)) return;
 
                     try {
                         renderer.toggleSelected(false);
-                        tmp = game.toString();
-                        game.move(move);
-                        history.add(0, tmp);
+                        game.move(move.toString());
+                        history.add(0, last);
                     }
                     catch (MoveException me) {
                         Log.i(TAG, "Move error <" + move + ">: " + me.toString());
 
                         if (me.isDirty()) {
-                            game = new Chess(tmp);
+                            game = new Chess(last);
                         }
                     }
-
-                    move = null;
-
-                    update();
+                    finally {
+                        move = null;
+                        update();
+                    }
                 }
             }
         });
