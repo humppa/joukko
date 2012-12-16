@@ -152,7 +152,8 @@ class GLView extends GLSurfaceView {
     }
 
     /**
-     * Save game state and rerender screen.
+     * 1) Save game state to non-volatile memory.
+     * 2) Delegate game state to renderer and redraw.
      *
      * This should be called whenever the state of the
      * game has changed.
@@ -162,7 +163,7 @@ class GLView extends GLSurfaceView {
         editor.putString(KEY, game.toString());
         editor.commit();
 
-        renderer.setState(game.getState(), game.getTurn());
+        renderer.setState(game);
         requestRender();
     }
 }

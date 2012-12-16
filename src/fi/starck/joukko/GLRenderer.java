@@ -5,6 +5,8 @@ import javax.microedition.khronos.opengles.GL10;
 
 import android.opengl.GLSurfaceView.Renderer;
 import android.util.Log;
+import fi.starck.sakki.board.Chess;
+import fi.starck.sakki.board.Coord;
 import fi.starck.sakki.board.Type;
 
 /**
@@ -21,15 +23,16 @@ class GLRenderer implements Renderer {
     private int file, rank;
     private boolean turn;
     private Type[][] state;
-    private Mark selected;
     private Backdrop backdrop;
     private Piecemaker[][] pieces;
+    private Mark checked, selected;
 
     public GLRenderer(Type[][] status, boolean bool) {
         Log.i(TAG, "@Constructor: new Board and Pieces");
 
         turn = bool;
         state = status;
+        checked = null;
         selected = null;
         backdrop = new Backdrop();
         pieces = new Piecemaker[8][8];
@@ -76,9 +79,9 @@ class GLRenderer implements Renderer {
 
         backdrop.draw(gl);
 
-        if (selected != null) {
-            selected.draw(gl);
-        }
+        if (checked != null) checked.draw(gl);
+
+        if (selected != null) selected.draw(gl);
 
         for (int x=0; x<8; x++) {
             for (int y=0; y<8; y++) {
@@ -113,18 +116,27 @@ class GLRenderer implements Renderer {
      * @param ok Indication if mark should be created or removed.
      */
     void toggleSelected(boolean ok) {
-        selected = ok? new Mark(file, rank, unit): null;
+        selected = ok? new Mark(file, rank, unit, Mark.YELLOW): null;
     }
 
     /**
      * Update game state information.
      *
-     * @param typearray Game state.
-     * @param bool Side of the next move.
+     * @param game State.
      */
-    void setState(Type[][] typearray, boolean bool) {
-        state = typearray;
-        turn = bool;
+    void setState(Chess game) {
+        state = game.getState();
+        turn = game.getTurn();
+
+        Coord coord = game.isChecked();
+
+        if (coord != null) {
+            int[] xy = coord.toInts();
+            checked = new Mark(xy[0], 8-xy[1], unit, Mark.RED);
+        }
+        else {
+            checked = null;
+        }
     }
 
     /**
