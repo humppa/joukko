@@ -4,7 +4,6 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.opengl.GLSurfaceView.Renderer;
-import android.util.Log;
 import fi.starck.sakki.board.Chess;
 import fi.starck.sakki.board.Coord;
 import fi.starck.sakki.board.Type;
@@ -17,8 +16,6 @@ import fi.starck.sakki.board.Type;
  * @author Tuomas Starck
  */
 class GLRenderer implements Renderer {
-    private final String TAG = "GLR";
-
     private int width, height, unit;
     private int file, rank;
     private boolean turn;
@@ -28,8 +25,6 @@ class GLRenderer implements Renderer {
     private Mark checked, selected;
 
     public GLRenderer(Type[][] status, boolean bool) {
-        Log.i(TAG, "@Constructor: new Board and Pieces");
-
         turn = bool;
         state = status;
         checked = null;
@@ -40,8 +35,6 @@ class GLRenderer implements Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        Log.i(TAG, "@SurfaceCreated: setting up GL.");
-
         gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
         gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
         gl.glEnable(GL10.GL_CULL_FACE);
@@ -50,8 +43,6 @@ class GLRenderer implements Renderer {
 
     @Override
     public void onSurfaceChanged(GL10 gl, int w, int h) {
-        Log.i(TAG, "[width,height] :: [" + w + "," + h + "]");
-
         width = w;
         height = h;
         unit = w < h? w/8: h/8;
@@ -116,7 +107,7 @@ class GLRenderer implements Renderer {
      * @param ok Indication if mark should be created or removed.
      */
     void toggleSelected(boolean ok) {
-        selected = ok? new Mark(file, rank, unit, Mark.YELLOW): null;
+        selected = ok? new Mark(file, rank, unit, Mark.SELECT): null;
     }
 
     /**
@@ -132,7 +123,7 @@ class GLRenderer implements Renderer {
 
         if (coord != null) {
             int[] xy = coord.toInts();
-            checked = new Mark(xy[0], 8-xy[1], unit, Mark.RED);
+            checked = new Mark(xy[0], 8-xy[1], unit, Mark.CHECK);
         }
         else {
             checked = null;

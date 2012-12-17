@@ -34,10 +34,10 @@ class Backdrop extends Drawable {
         float quad = 4*u;
 
         colours.put(new float[] {
-            0.9375f, 0.0345f, 0.2906f, 1.0f,
-            0.9575f, 0.1345f, 0.2406f, 1.0f,
-            0.9775f, 0.2345f, 0.1906f, 1.0f,
-            0.9975f, 0.2345f, 0.0906f, 1.0f
+            1.000f, 0.564f, 0.755f, 1.0f,
+            1.000f, 0.688f, 0.766f, 1.0f,
+            1.000f, 0.600f, 0.777f, 1.0f,
+            1.000f, 0.611f, 0.788f, 1.0f
         });
         vertices.put(new float[] {
             -quad, -quad, 0,
@@ -58,11 +58,11 @@ class Backdrop extends Drawable {
     }
 
     private void makeASquare(int x, int y) {
-        float clr[] = new float[] {
-            0.22f, 0.21f, 0.11f, 1.0f,
-            0.21f, 0.11f, 0.11f, 1.0f,
-            0.11f, 0.11f, 0.10f, 1.0f,
-            0.11f, 0.10f, 0.01f, 1.0f,
+        float rgba[] = new float[] {
+            0.687f, 0.184f, 0.310f, 1.0f,
+            0.692f, 0.180f, 0.321f, 1.0f,
+            0.696f, 0.176f, 0.323f, 1.0f,
+            0.699f, 0.172f, 0.334f, 1.0f
         };
 
         float sqr[] = new float[]{
@@ -77,7 +77,7 @@ class Backdrop extends Drawable {
             sqr[i++] += unit*y;
         }
 
-        colours.put(clr);
+        colours.put(rgba);
         vertices.put(sqr);
     }
 }

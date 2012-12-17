@@ -17,7 +17,7 @@ class Piecemaker extends Drawable {
         if (f == null) return;
 
         float[] vanilla = f.getCoords();
-        float color = type.getSide()? 1.0f: 0.42f;
+        float color = type.getSide()? 1.0f: 0.0f;
         int len = vanilla.length;
         count = len/3;
 

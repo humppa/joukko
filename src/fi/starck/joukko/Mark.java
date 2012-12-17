@@ -9,8 +9,8 @@ import java.nio.ByteOrder;
  * @author Tuomas Starck
  */
 class Mark extends Drawable {
-    static final float[] RED    = new float[] {0.93f, 0.11f, 0.22f};
-    static final float[] YELLOW = new float[] {0.95f, 0.72f, 0.21f};
+    static final float[] SELECT = new float[] {0.98f, 0.06f, 0.47f};
+    static final float[] CHECK  = new float[] {0.99f, 0.96f, 0.04f};
 
     private float[] mark = new float[] {
            0,    0, 0.3f,
