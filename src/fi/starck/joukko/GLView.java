@@ -133,6 +133,11 @@ class GLView extends GLSurfaceView {
         return true;
     }
 
+    void reset() {
+        game = new Chess();
+        update();
+    }
+
     /**
      * Undo.
      *
