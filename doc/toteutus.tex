@@ -1,0 +1,75 @@
+\documentclass[11pt]{article}
+\usepackage[pdftex]{graphicx}
+\usepackage[finnish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{color}
+
+\begin{document}
+
+\title{
+\Huge{\bf Joukko} \\
+\Large{on shakkilauta Androidille} \\
+\large{Android-ohjelmoinnin harjoitustyö}}
+\author{Tuomas Starck}
+\maketitle
+
+\vspace{4em}
+
+\section{Aiheen kuvaus}
+\label{sec:aihe}
+
+\subsection{Yleistä}
+
+\paragraph{} Joukko on Android-alustalle kehitetty shakkipelisovellus. Joukko on pelkkä edusta (\textit{frontend}) ja vaatii toimiakseen \texttt{Sakki} pelilogiikkamoottorin, joka on saatavilla osoitteesta \url{https://github.com/hunppa/sakki}.
+
+\paragraph{} Joukko soveltaa nykyisiä yleisiä shakin sääntöjä sillä erotuksella, ettei sotilaan korotus upseeriksi toimi. Peli on suunniteltu kahdelle pelaajalle eikä siinä ole tekoälyvastustajaa.
+
+\subsection{Teknistä}
+
+\paragraph{} Joukko käyttää OpenGL ES -rajapintaa ja Android-laitteen kiihtyvyyssensoria. Android-järjestelmät ovat tuettu versiosta 2.2 alkaen (API level 8).
+
+\section{Käyttöliittymä}
+
+\paragraph{} Pelin käyttöliittymä simuloi perinteistä fyysistä shakkilautaa, ja on siten hyvin pelkistetty. Käyttöliittymän peruselementti on $8\times8$-kokoinen ruutukuvio, joka toimii pelilautana. Mikäli Android-järjestelmä sallii käyttöliittymän orientaation muutoksen, piirretään pelilauta aina oikein päin eli niin, että pelilaudan alaosa (1. rivi) on alhaalla.
+
+\begin{figure}
+\includegraphics[width=\linewidth]{vaakakali.png}
+\caption{Laite on vaakatasossa ja pelissä on valkoisen vuoro siirtää.}
+\label{fig:kali}
+\end{figure}
+
+\paragraph{} Niin kuin shakkilaudalta voi odottaa, on sillä valkoisia ja mustia pelinappuloita. Kun pelissä on valkoisen vuoro siirtää, piirretään nappulat oikein päin suhteessa pelilaudan orientaatioon, mutta siirron jälkeen (kun on mustan pelaajan vuoro) nappulat piirretään ylösalaisin. Tämä vastaa käyttötapausta, jossa Android-laite on pelaajien välissä niin, että molemmat pelaajat ovat laitteen äärellä vastakkaisilla puolilla. Nappuloiden piirtosuunta toimii sekä visuaalisena merkkinä siitä, kumman pelaajan vuoro on että auttaa pelivuorossa olevaa pelaajaa paremmin hahmottamaan pelilaudan tilannetta.
+
+\section{Rakenteen kuvaus ja luokkakaavio}
+
+\paragraph{}
+
+% \section{Pääkäyttötapauksen kuvaus ja sekvenssikaavio}
+
+\section{Testausdokumentti}
+
+\paragraph{} Koska Joukko on pääsääntöisesti pelkkä käyttöliittymä eikä sisällä pelilogiikkaa (ks. kappale~\ref{sec:aihe}) on siinä hyvin vähän automaattisesti testattavaa. Kaikki tehty testaus on ollut luonteeltaan integraatiotestausta eli toteutettuja ominaisuuksia on näpytelty, hypistelty ja ravistettu kunnes ne toimivat toivotusti eivätkä mene rikki.
+
+\section{Käyttöohje}
+
+\subsection{Siirto}
+
+\paragraph{} Pelinappulan siirto tapahtuu valitsemalla ensin se ruutu, jolla nappula on ja sitten koskettamalla ruutua, jolle nappulan halutaan siirtyvän. Onnistunut valinta näkyy punaisena korostuksena. Jos siirto halutaan perua sen jälkeen, kun lähtöruudun valinta on tehty, voidaan joko koskettaa valittu ruutua uudestaan tai painaa Androidin back-painiketta.
+
+\subsection{Shakkaus}
+
+\paragraph{} Kun kuningas on shakattuna, piirtyy sen ruutuun keltainen merkki. Shakin sääntöjen mukaan peli voi jatkua vain, jos shakkaus puretaan. Shakkimatti-tilannetta ei erikseen tunnisteta (eikä siitä saa visuaalista tai muuta palautetta) vaan pelaajien täytyy itse ymmärtää pelin päättyneen.
+
+\subsection{Aloitus}
+
+\paragraph{} Pelilaudan voi palauttaa alkutilanteeseen ravistamalla Android-laitetta terävästi. \textbf{Pelin kehittäjä ei ota vastuuta ravistamalla rikotuista laitteista!} Riittävä liike on lyhyt, mutta reipas.
+
+\subsection{Kumous}
+
+\paragraph{} Androidin back-painike toimii kumous-painikkeena, jolla pääsee pelihistoriassa taaksepäin, mikäli pelihistoria on saatavilla. Pelihistoriaa ei tallenneta pysyvästi, joten se tyhjentyy mm. silloin, kun laitteen orientaatio muuttuu tai Android-järjestelmä sulkee pelin.
+
+\end{document}
