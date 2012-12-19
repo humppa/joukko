@@ -10,3 +10,6 @@ local.properties
 bin/
 gen/
 assets/
+
+libs/Sakki.jar
+libs/android-support-v4.jar
